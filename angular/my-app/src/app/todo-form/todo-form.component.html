@@ -1,0 +1,16 @@
+<form (ngSubmit)="sendTaskToParent">
+  <label for="id">
+    ID:
+    <input type="text" id="id" [(ngModel)]="task.id" name="id"> <br>
+  </label> <br>
+  <label for="title">
+    Title:
+    <input type="text" id="title" [(ngModel)]="task.title" name="title"> <br>
+  </label> <br>
+  <label for="description">
+    Description:
+    <input type="text" id="description" [(ngModel)]="task.description" name="description"> <br>
+  </label> <br>
+
+  <input type="submit" [value]="buttonName">
+  </form>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <description>Ma formation vue</title>
+</head>
+<body>
+  <div id="app">
+    Mon texte statique
+    {{ monTexteAInterpreter }}
+
+    <div v-if="isTexteVisible">Texte à cacher</div>
+    
+    <ul @click="clickTask">
+      <task
+        v-for="task in tasks"
+        :key="task.id"
+        :task-object="task"
+      />
+    </ul>
+
+    <new-todo @new-todo-changed="newTodoChanged"></new-todo>
+
+    {{ taskName }}
+
+    <input type="text" v-model="taskName"> {{ taskNameInCaps }} 
+  </div>
+  <style>
+    .isDone {
+      text-decoration: underline;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const newTodoComp = Vue.component('newTodo', {
+      template: '<input type="text v-model="newTodo />',
+      watch: {
+        newTodo (oldValue, newValue) {
+          console.log(oldValue, newValue)
+          this.$emit('newTodoChanged')
+        }
+      }
+    })
+    const todoComponent = Vue.component('task', {
+      template: '<li :id="`task_${taskObject.id}`" class="task" :class="{ isDone: taskObject.isDone }"><input type="checkbox" v-model="taskObject.isDone"/>{{ taskObject.title }}</li>',
+      props: [ 'taskObject' ],
+      created () {
+        console.log(this.taskObject)
+        console.log('je suis créé')
+      },
+      watch: {
+        taskObject: {
+          handler: function (oldValue, newValue) {
+            console.log(oldValue.isDone, newValue.isDone)
+          },
+          deep: true,
+        } 
+      }
+    })
+    const app = new Vue({
+      el: "#app",
+      component: {
+        todoComponent,
+        newTodoComp
+      },
+      data: {
+        monTexteAInterpreter: 'Texte interprété',
+        isTexteVisible: false,
+        tasks: [{
+          id: 1,
+          title: 'Ma première tâche',
+          description: 'Ma première tâche',
+          isDone: false
+        }, {
+          id: 2,
+          title: 'Ma seconde tâche',
+          description: 'Ma seconde tâche',
+          isDone: true
+        }],
+        taskName: 'Toto'
+      },
+      computed: {
+        taskNameInCaps () {
+          return this.taskName.toUpperCase()
+        }
+      },
+      methods: {
+        clickTask () {
+          console.log('test')
+          this.taskName = ''
+        },
+        newTodoChanged () {
+          console.log('le parent a reagit !')
+        }
+      }
+    })
+
+    
+  </script>
+</body>
+</html>
